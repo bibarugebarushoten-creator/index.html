@@ -5,14 +5,20 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Danmaku</title>
   <style>
-    html, body { height: 100%; margin: 0; background: transparent; }
+    html, body {
+      height: 100%;
+      margin: 0;
+      background: transparent;
+    }
+
     #box {
       position: relative;
       height: 260px;
       overflow: hidden;
       border-radius: 16px;
-      background: rgba(0,0,0,0.88);
+      background: transparent; /* transparent overlay */
     }
+
     .dm {
       position: absolute;
       right: -30%;
@@ -24,86 +30,13 @@
       animation: fly linear var(--dur) forwards;
       pointer-events: none;
     }
+
     @keyframes fly {
       from { transform: translateX(0); }
       to   { transform: translateX(calc(-140vw - 100%)); }
     }
+
     .ui {
       position: absolute;
       left: 10px;
       bottom: 10px;
-      display: flex;
-      gap: 8px;
-      width: calc(100% - 20px);
-    }
-    input, button {
-      border: 0;
-      border-radius: 999px;
-      padding: 10px 12px;
-      font: 600 14px system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-      outline: none;
-    }
-    input { flex: 1; }
-    button { cursor: pointer; }
-    .note {
-      position:absolute; left:12px; top:10px;
-      font: 600 12px system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-      color: rgba(255,255,255,.7);
-    }
-  </style>
-</head>
-<body>
-  <div id="box">
-    <div class="note">Danmaku demo (not shared across visitors)</div>
-    <div class="ui">
-      <input id="msg" maxlength="80" placeholder="Type a comment (e.g. 草 / LOL / so good)" />
-      <button id="send">Send</button>
-    </div>
-  </div>
-
-  <script>
-    const box = document.getElementById("box");
-    const msg = document.getElementById("msg");
-    const send = document.getElementById("send");
-
-    const lanes = 7;
-    const getLaneY = () => {
-      const h = box.clientHeight;
-      const topPad = 14;
-      const bottomPad = 58; // leave space for input
-      const usable = h - topPad - bottomPad;
-      const laneH = usable / lanes;
-      const lane = Math.floor(Math.random() * lanes);
-      return Math.round(topPad + lane * laneH);
-    };
-
-    function spawn(text) {
-      const el = document.createElement("div");
-      el.className = "dm";
-      el.textContent = text;
-
-      const dur = (6 + Math.random() * 7).toFixed(2) + "s";
-      el.style.top = getLaneY() + "px";
-      el.style.setProperty("--dur", dur);
-
-      box.appendChild(el);
-      el.addEventListener("animationend", () => el.remove());
-    }
-
-    function submit() {
-      const t = (msg.value || "").trim();
-      if (!t) return;
-      spawn(t);
-      msg.value = "";
-      msg.focus();
-    }
-
-    send.addEventListener("click", submit);
-    msg.addEventListener("keydown", (e) => { if (e.key === "Enter") submit(); });
-
-    // Optional auto-comments for vibe (remove if you want)
-    const demo = ["草", "最高ｗｗｗ", "この曲すき", "nice", "W", "omg", "banger"];
-    setInterval(() => spawn(demo[Math.floor(Math.random() * demo.length)]), 1100);
-  </script>
-</body>
-</html>
